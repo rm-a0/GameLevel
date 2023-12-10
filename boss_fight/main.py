@@ -27,17 +27,18 @@ def bindKeys():
 root = Tk()
 root.title('Title')
 #create canvas
-canvas = Canvas(root, width=WIDTH, height=HEIGHT, bg='white')
+canvas = Canvas(root, width=WIDTH, height=HEIGHT, bg='black')
 canvas.pack()
 canvas.focus_set()
 #import images
 rune_background = PhotoImage(file=os.path.join(assetsDirectory, 'rune_background.PNG'))
 rune_frame = PhotoImage(file=os.path.join(assetsDirectory, 'rune_frame.PNG'))
+godricks_rune = PhotoImage(file=os.path.join(assetsDirectory, 'godricks_rune.PNG'))
 #create objects
 player = Player(canvas, name='Player1', healthPoints=700, mana=200, stamina=500)
-boss = Boss(canvas, name='Malenia, Blade of Miquella', healthPoints=800)
+boss = Boss(canvas, name='Boss1', healthPoints=800)
 estustFlask = EstustFlask(quantity=12, healing=280)
-gameUI = GameUI(canvas, player, boss, rune_background, rune_frame)
+gameUI = GameUI(canvas, player, boss, rune_background, rune_frame, godricks_rune)
 
 bindKeys()
 
