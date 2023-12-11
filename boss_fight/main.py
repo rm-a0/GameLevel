@@ -21,6 +21,12 @@ def bindKeys():
     canvas.bind("d", player.moveRight)
     canvas.bind("<space>", player.jump)
 
+def updateUI():
+    gameUI.updateHealthBar()
+    gameUI.updateStaminaBar()
+    gameUI.updateManaBar()
+    root.after(500, updateUI)
+
 #main function
 
 #create root
@@ -35,11 +41,15 @@ rune_background = PhotoImage(file=os.path.join(assetsDirectory, 'rune_background
 rune_frame = PhotoImage(file=os.path.join(assetsDirectory, 'rune_frame.PNG'))
 godricks_rune = PhotoImage(file=os.path.join(assetsDirectory, 'godricks_rune.PNG'))
 #create objects
-player = Player(canvas, name='Player1', healthPoints=700, mana=200, stamina=500)
+player = Player(canvas, name='Player1', healthPoints=800, mana=100, stamina=700)
 boss = Boss(canvas, name='Boss1', healthPoints=800)
 estustFlask = EstustFlask(quantity=12, healing=280)
 gameUI = GameUI(canvas, player, boss, rune_background, rune_frame, godricks_rune)
 
 bindKeys()
+
+#game loop
+player.refillStamina()
+updateUI()
 
 root.mainloop()

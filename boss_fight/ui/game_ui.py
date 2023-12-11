@@ -10,6 +10,7 @@ class GameUI:
         self.playerHealthBar = self.createHealthBar()
         self.playerManaBar = self.createManaBar()
         self.playerStaminaBar = self.createStaminaBar()
+        #self.borders = self.createBorders()
 
         self.estusFlaskSlot = self.createItemSlot(50, HEIGHT-180)
         self.weaponSlot = self.createItemSlot(120, HEIGHT-220)
@@ -29,23 +30,35 @@ class GameUI:
     def createHealthBar(self):
         x = 150
         y = 60
-        healthBar = self.canvas.create_rectangle(x + 25, y, x + self.player.healthPoints/1.2, y - 16, fill='red', outline='')
-        healthBar = self.canvas.create_rectangle(x + 25, y, x + self.player.healthPoints/1.2, y - 4, fill='#f08e0c', outline='')
+        healthBar = self.canvas.create_rectangle(x, y, x + self.player.healthPoints, y - 16, fill='red', outline='')
         return healthBar
     
+    def updateHealthBar(self):
+        x = 150
+        y = 60
+        self.canvas.coords(self.playerHealthBar, x, y, x + self.player.healthPoints, y - 16)
+
     def createManaBar(self):
         x = 150
         y = 90
-        manaBar = self.canvas.create_rectangle(x + 25, y, x + self.player.mana/1.2, y - 16, fill='blue', outline='')
-        manaBar = self.canvas.create_rectangle(x + 25, y, x + self.player.mana/1.2, y - 4, fill='#f08e0c', outline='')
+        manaBar = self.canvas.create_rectangle(x, y, x + self.player.mana, y - 16, fill='blue', outline='')
         return manaBar
+    
+    def updateManaBar(self):
+        x = 150
+        y = 90
+        self.canvas.coords(self.playerManaBar, x, y, x + self.player.mana, y - 16)
     
     def createStaminaBar(self):
         x = 150
         y = 120
-        staminaBar = self.canvas.create_rectangle(x + 25, y, x + self.player.stamina/1.2, y - 16, fill='green', outline='')
-        staminaBar = self.canvas.create_rectangle(x + 25, y, x + self.player.stamina/1.2, y - 4, fill='#f08e0c', outline='')
+        staminaBar = self.canvas.create_rectangle(x, y, x + self.player.stamina, y - 16, fill='green', outline='')
         return staminaBar
+
+    def updateStaminaBar(self):
+        x = 150
+        y = 120
+        self.canvas.coords(self.playerStaminaBar, x, y, x + self.player.stamina, y - 16)
 
     def createItemSlot(self, x, y):
         slotWidth = 60
