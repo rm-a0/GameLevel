@@ -1,7 +1,7 @@
 from tkinter import *
 import os
 
-from constants import WIDTH, HEIGHT
+from constants import WIDTH, HEIGHT, DELAY
 from entities.player import Player
 from entities.boss import Boss
 from entities.estus_flask import EstustFlask
@@ -17,15 +17,25 @@ def fullscreen(event):
 
 def bindKeys():
     canvas.bind("<F11>", fullscreen)
-    canvas.bind("a", player.moveLeft)
-    canvas.bind("d", player.moveRight)
+    canvas.bind("<KeyPress-a>", player.moveLeft)
+    canvas.bind("<KeyRelease-a>", player.stopMoveLeft)
+    canvas.bind("<KeyPress-d>", player.moveRight)
+    canvas.bind("<KeyRelease-d>", player.stopMoveRight)
     canvas.bind("<space>", player.jump)
 
 def updateUI():
     gameUI.updateHealthBar()
     gameUI.updateStaminaBar()
     gameUI.updateManaBar()
-    root.after(500, updateUI)
+    canvas.after(DELAY, updateUI)
+
+def updatePlayer():
+    #convert delay to seconds
+    dt = DELAY / 1000.0
+    player.updatePosition(dt)
+    player.refillStamina()
+    canvas.after(DELAY, updatePlayer)
+
 
 #main function
 
@@ -49,7 +59,7 @@ gameUI = GameUI(canvas, player, boss, rune_background, rune_frame, godricks_rune
 bindKeys()
 
 #game loop
-player.refillStamina()
-updateUI()
+canvas.after(DELAY, updateUI)
+canvas.after(DELAY, updatePlayer)
 
 root.mainloop()

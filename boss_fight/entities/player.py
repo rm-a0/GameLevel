@@ -1,4 +1,4 @@
-from constants import HEIGHT
+from constants import HEIGHT, DELAY
 
 class Player:
     def __init__(self, canvas, name, healthPoints, mana, stamina):
@@ -10,9 +10,15 @@ class Player:
         self.mana = mana
         self.maxStamina = stamina
         self.stamina = stamina
-        self.speed = 10
-        #jump() releated atribbutes
-        self.jumpHeight = 150
+        self.speed = 500
+        self.jumpSpeed = 1000
+        self.jumpHeight = 200 + 150
+
+        self.velocityX = 0
+        self.velocityY = 0
+        self.isJumping = False
+        #selg.gravity = idk
+
         #coordinates and dimensions of a player object
         self.x = 200
         self.y = HEIGHT - 250
@@ -23,24 +29,32 @@ class Player:
 
     def refillStamina(self):
         if self.stamina < self.maxStamina:
-            self.stamina += 10
-        self.canvas.after(500, self.refillStamina)
+            self.stamina += 1
+
+    def updatePosition(self, dt):
+        self.x += self.velocityX * dt
+        self.y += self.velocityY * dt
+        self.canvas.coords(self.hitbox, self.x, self.y, self.x + self.width, self.y + self.height)
 
     def moveLeft(self, event):
-        self.x -= self.speed
-        self.canvas.coords(self.hitbox, self.x, self.y, self.x + self.width, self.y + self.height)
-        self.canvas.after(10, self.moveLeft)
+        self.velocityX = -self.speed
+
+    def stopMoveLeft(self, event):
+        self.velocityX = 0
 
     def moveRight(self, event):
-        self.x += self.speed
-        self.canvas.coords(self.hitbox, self.x, self.y, self.x + self.width, self.y + self.height)
-        self.canvas.after(10, self.moveRight)
+        self.velocityX = self.speed
+
+    def stopMoveRight(self, event):
+        self.velocityX = 0
 
     def jump(self, event):
-        if self.stamina > 200:
-            self.y -= self.jumpHeight
-            self.canvas.coords(self.hitbox, self.x, self.y, self.x + self.width, self.y + self.height)
+        if not self.isJumping and self.stamina > 200:
             self.stamina -= 200
-            self.canvas.after(10, self.jump)
-
+            self.velocityY = -self.jumpSpeed
+            self.isJumping = True
+            self.canvas.after(DELAY, self.stopJumping) #ion understand this shit
     
+    def stopJumping(self):
+        self.isJumping = False
+        self.velocityY = 0
