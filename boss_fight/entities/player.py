@@ -1,4 +1,6 @@
-from constants import HEIGHT, DELAY
+import time
+
+from constants import HEIGHT, GRAVITY
 
 class Player:
     def __init__(self, canvas, name, healthPoints, mana, stamina):
@@ -11,7 +13,8 @@ class Player:
         self.maxStamina = stamina
         self.stamina = stamina
         self.speed = 500
-        self.jumpSpeed = 1000
+
+        self.jumpStrength = 500
         self.jumpHeight = 200 + 150
 
         self.velocityX = 0
@@ -49,12 +52,16 @@ class Player:
         self.velocityX = 0
 
     def jump(self, event):
-        if not self.isJumping and self.stamina > 200:
+        if self.isJumping == False and self.stamina > 200:
             self.stamina -= 200
-            self.velocityY = -self.jumpSpeed
+            self.velocityY = -self.jumpStrength
             self.isJumping = True
-            self.canvas.after(DELAY, self.stopJumping) #ion understand this shit
-    
-    def stopJumping(self):
-        self.isJumping = False
-        self.velocityY = 0
+
+    def applyGravity(self, dt):
+        if self.isJumping:
+            self.velocityY += GRAVITY * dt
+
+            if self.y == HEIGHT- 250:
+                self.isJumping = False
+                self.velocityY = 0
+  

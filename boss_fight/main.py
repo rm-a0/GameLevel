@@ -23,19 +23,21 @@ def bindKeys():
     canvas.bind("<KeyRelease-d>", player.stopMoveRight)
     canvas.bind("<space>", player.jump)
 
-def updateUI():
+def updateGame():
+    #converts delay to seconds
+    dt = DELAY / 1000.0
+
+    #update entities
+    player.updatePosition(dt)
+    player.applyGravity(dt)
+    player.refillStamina()
+
+    #update UI
     gameUI.updateHealthBar()
     gameUI.updateStaminaBar()
     gameUI.updateManaBar()
-    canvas.after(DELAY, updateUI)
 
-def updatePlayer():
-    #convert delay to seconds
-    dt = DELAY / 1000.0
-    player.updatePosition(dt)
-    player.refillStamina()
-    canvas.after(DELAY, updatePlayer)
-
+    canvas.after(DELAY, updateGame)
 
 #main function
 
@@ -59,7 +61,6 @@ gameUI = GameUI(canvas, player, boss, rune_background, rune_frame, godricks_rune
 bindKeys()
 
 #game loop
-canvas.after(DELAY, updateUI)
-canvas.after(DELAY, updatePlayer)
+canvas.after(DELAY, updateGame)
 
 root.mainloop()
