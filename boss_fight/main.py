@@ -17,11 +17,20 @@ def fullscreen(event):
 
 def bindKeys():
     canvas.bind("<F11>", fullscreen)
+
+    #PLAYER RELEATED KEYBINDS
+    #fix clunky movement in the future - refine left and right movement
     canvas.bind("<KeyPress-a>", player.moveLeft)
     canvas.bind("<KeyRelease-a>", player.stopMoveLeft)
     canvas.bind("<KeyPress-d>", player.moveRight)
     canvas.bind("<KeyRelease-d>", player.stopMoveRight)
+    #make jumping more realistic
     canvas.bind("<space>", player.jump)
+    #finish roll function
+    canvas.bind("<Shift_L>", player.roll)
+
+    #ITEM RELEATED KEYBINDS
+    #canvas.bind("<e>", estustFlask.use(player))
 
 def updateGame():
     #converts delay to seconds
@@ -62,5 +71,9 @@ bindKeys()
 
 #game loop
 canvas.after(DELAY, updateGame)
+
+#delete later
+print(f"delay: {DELAY} ms")
+print(f"delta time: {DELAY/1000} ms")
 
 root.mainloop()

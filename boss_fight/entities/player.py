@@ -1,4 +1,6 @@
 import time
+RIGHT = 0
+LEFT = 1
 
 from constants import HEIGHT, GRAVITY
 
@@ -14,13 +16,16 @@ class Player:
         self.stamina = stamina
         self.speed = 500
 
+        self.rollSpeed = self.speed/2
         self.jumpStrength = 500
         self.jumpHeight = 200 + 150
 
         self.velocityX = 0
         self.velocityY = 0
+
         self.isJumping = False
-        #selg.gravity = idk
+        self.facing = RIGHT
+        self.isRolling = False #used for checking hitbox status
 
         #coordinates and dimensions of a player object
         self.x = 200
@@ -41,18 +46,20 @@ class Player:
 
     def moveLeft(self, event):
         self.velocityX = -self.speed
+        self.facing = LEFT
 
     def stopMoveLeft(self, event):
         self.velocityX = 0
 
     def moveRight(self, event):
         self.velocityX = self.speed
+        self.facing = RIGHT
 
     def stopMoveRight(self, event):
         self.velocityX = 0
 
     def jump(self, event):
-        if self.isJumping == False and self.stamina > 200:
+        if self.isJumping == False and self.stamina > 200 and self.isRolling == False:
             self.stamina -= 200
             self.velocityY = -self.jumpStrength
             self.isJumping = True
@@ -64,4 +71,20 @@ class Player:
             if self.y == HEIGHT- 250:
                 self.isJumping = False
                 self.velocityY = 0
-  
+    
+    def roll(self, event):
+        if self.isRolling == False and self.stamina > 200 and self.isJumping == False:
+            self.stamina -= 200
+            self.isRolling = True
+            self.executeRoll()
+            self.canvas.after(500, self.endRoll())
+
+    def executeRoll(self):
+        if self.facing == RIGHT:
+            self.velocityX = self.rollSpeed
+        if self.facing ==  LEFT:
+            self.velocityX = -self.rollSpeed
+
+    def endRoll(self):
+        self.isRolling = False
+        self.velocityX = 0
