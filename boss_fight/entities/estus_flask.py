@@ -11,4 +11,5 @@ class EstustFlask:
                 player.healthPoints += (player.healthPoints + self.healing) - player.maxHealthPoints
             self.quantity -= 1
         
+        #delete later
         print(f"flask amount: {self.quantity}")

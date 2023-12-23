@@ -1,4 +1,3 @@
-import time
 RIGHT = 0
 LEFT = 1
 
@@ -15,6 +14,10 @@ class Player:
         self.maxStamina = stamina
         self.stamina = stamina
         self.speed = 500
+
+        self.equippedWeapon = None
+        self.attackHitbox = None
+        self.bossInstance = None
 
         self.rollSpeed = self.speed*1.5
         self.jumpStrength = 500
@@ -34,6 +37,12 @@ class Player:
         self.width = 60
         #creating hitbox for a character
         self.hitbox = canvas.create_rectangle(self.x, self.y, self.x + self.width, self.y + self.height, outline='green')
+
+    def createBossInstance(self, bossInstance):
+        self.bossInstance = bossInstance
+
+    def equipWeapon(self, weapon):
+        self.equippedWeapon = weapon
 
     def refillStamina(self):
         if self.stamina < self.maxStamina:
@@ -96,6 +105,14 @@ class Player:
 
     def executeAttack(self):
         if self.isFacing == RIGHT:
-            print("Right attack")
+            self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x + self.width, self.y + self.height/2, self.equippedWeapon.reach, -180)
         if self.isFacing == LEFT:
-            print("Left attack")
+            self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x, self.y + self.height/2, self.equippedWeapon.reach, 180)
+        self.checkCollision()
+        self.canvas.delete(self.attackHitbox)
+        self.attackHitbox = None
+
+
+    def checkCollision(self):
+        self.bossInstance.healthPoints -= self.equippedWeapon.damage
+        print(f"boss hp: {self.bossInstance.healthPoints}")

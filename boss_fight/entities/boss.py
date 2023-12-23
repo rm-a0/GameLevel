@@ -5,6 +5,8 @@ class Boss:
         self.canvas = canvas
         self.name = name
         self.healthPoints = healthPoints
+
+        self.playerInstance = None
         #starting coordinates and dimensions of a boss object
         self.x = WIDTH - 200
         self.y = HEIGHT - 250
@@ -12,3 +14,6 @@ class Boss:
         self.width = 60
         #creating hitbox for a boss
         self.hitbox = canvas.create_rectangle(self.x, self.y, self.x + self.width, self.y + self.height, outline='red')
+
+    def createPlayerInstance(self, playerInstance):
+        self.playerInstance = playerInstance
