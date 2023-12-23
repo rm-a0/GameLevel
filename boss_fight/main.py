@@ -16,21 +16,22 @@ def fullscreen(event):
     root.attributes('-fullscreen', not current_state)
 
 def bindKeys():
+    #UI RELEATED KEYBINDS
     canvas.bind("<F11>", fullscreen)
 
     #PLAYER RELEATED KEYBINDS
-    #fix clunky movement in the future - refine left and right movement
+    #fix clunky movement in the future - refine left and right movement (probably not happening cuz tkinter is shit)
+    #make jumping more realistic - add exponential and log fucntions
     canvas.bind("<KeyPress-a>", player.moveLeft)
     canvas.bind("<KeyRelease-a>", player.stopMoveLeft)
     canvas.bind("<KeyPress-d>", player.moveRight)
     canvas.bind("<KeyRelease-d>", player.stopMoveRight)
-    #make jumping more realistic
     canvas.bind("<space>", player.jump)
-    #finish roll function
-    canvas.bind("<Shift_L>", player.roll)
+    canvas.bind("<KeyPress-Shift_L>", player.roll)
+    canvas.bind("<Button-1>", player.attack)
 
     #ITEM RELEATED KEYBINDS
-    #canvas.bind("<e>", estustFlask.use(player))
+    canvas.bind("<e>", lambda event: estustFlask.heal(player, event))
 
 def updateGame():
     #converts delay to seconds
@@ -46,9 +47,10 @@ def updateGame():
     gameUI.updateStaminaBar()
     gameUI.updateManaBar()
 
+    #recursive call
     canvas.after(DELAY, updateGame)
 
-#main function
+#MAIN FUNCTION
 
 #create root
 root = Tk()

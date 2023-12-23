@@ -16,7 +16,7 @@ class Player:
         self.stamina = stamina
         self.speed = 500
 
-        self.rollSpeed = self.speed/2
+        self.rollSpeed = self.speed*1.5
         self.jumpStrength = 500
         self.jumpHeight = 200 + 150
 
@@ -24,7 +24,7 @@ class Player:
         self.velocityY = 0
 
         self.isJumping = False
-        self.facing = RIGHT
+        self.isFacing = RIGHT
         self.isRolling = False #used for checking hitbox status
 
         #coordinates and dimensions of a player object
@@ -46,14 +46,14 @@ class Player:
 
     def moveLeft(self, event):
         self.velocityX = -self.speed
-        self.facing = LEFT
+        self.isFacing = LEFT
 
     def stopMoveLeft(self, event):
         self.velocityX = 0
 
     def moveRight(self, event):
         self.velocityX = self.speed
-        self.facing = RIGHT
+        self.isFacing = RIGHT
 
     def stopMoveRight(self, event):
         self.velocityX = 0
@@ -77,14 +77,25 @@ class Player:
             self.stamina -= 200
             self.isRolling = True
             self.executeRoll()
-            self.canvas.after(500, self.endRoll())
+            self.canvas.after(500, self.endRoll)
 
     def executeRoll(self):
-        if self.facing == RIGHT:
+        if self.isFacing == RIGHT:
             self.velocityX = self.rollSpeed
-        if self.facing ==  LEFT:
+        if self.isFacing ==  LEFT:
             self.velocityX = -self.rollSpeed
 
     def endRoll(self):
         self.isRolling = False
         self.velocityX = 0
+
+    def attack(self, event):
+        if self.isRolling == False and self.stamina > 200:
+            self.stamina -= 200
+            self.executeAttack()
+
+    def executeAttack(self):
+        if self.isFacing == RIGHT:
+            print("Right attack")
+        if self.isFacing == LEFT:
+            print("Left attack")
