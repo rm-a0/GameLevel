@@ -1,10 +1,11 @@
 from constants import HEIGHT
 
 class GameUI:
-    def __init__(self, canvas, player, boss, rune_background, rune_frame, chosen_rune):
+    def __init__(self, canvas, player, boss, estusFlask, rune_background, rune_frame, chosen_rune):
         self.canvas = canvas
         self.player = player
         self.boss = boss
+        self.estusFlask = estusFlask
         
         self.playerRune = self.createRune(rune_background, rune_frame, chosen_rune)
         self.playerHealthBar = self.createHealthBar()
@@ -13,6 +14,7 @@ class GameUI:
         #self.borders = self.createBorders()
 
         self.estusFlaskSlot = self.createItemSlot(50, HEIGHT-180)
+        self.estusFlaskCounter = self.createEstusFlaskCounter(50, HEIGHT-180)
         self.weaponSlot = self.createItemSlot(120, HEIGHT-220)
         self.emptySlot1 = self.createItemSlot(120, HEIGHT-130)
         self.emptySlot2 = self.createItemSlot(190, HEIGHT-180)
@@ -63,5 +65,17 @@ class GameUI:
     def createItemSlot(self, x, y):
         slotWidth = 60
         slotHeight = 80
-        rune = self.canvas.create_rectangle(x, y, x + slotWidth, y + slotHeight, fill='black')
-        return rune
+        slot = self.canvas.create_rectangle(x, y, x + slotWidth, y + slotHeight, fill='yellow')
+        return slot
+    
+    def createEstusFlaskCounter(self, x, y):
+        slotWidth = 60
+        slotHeight = 80
+
+        centerX = x + slotWidth / 2
+        centerY = y + slotHeight / 2
+        counter = self.canvas.create_text(centerX, centerY, text = self.estusFlask.quantity)
+        return counter
+
+    def updateEstusFlaskCounter(self, event):
+        self.canvas.itemconfig(self.estusFlaskCounter, text = self.estusFlask.quantity)

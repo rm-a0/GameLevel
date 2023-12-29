@@ -16,6 +16,10 @@ def fullscreen(event):
     current_state = root.attributes('-fullscreen')
     root.attributes('-fullscreen', not current_state)
 
+def healEvent(event):
+    estusFlask.heal(player, event)
+    gameUI.updateEstusFlaskCounter(event)
+
 def bindKeys():
     #UI RELEATED KEYBINDS
     canvas.bind("<F11>", fullscreen)
@@ -32,13 +36,13 @@ def bindKeys():
     canvas.bind("<Button-1>", player.attack)
 
     #ITEM RELEATED KEYBINDS
-    canvas.bind("<e>", lambda event: estustFlask.heal(player, event))
+    canvas.bind("<e>", lambda event: healEvent(event))
 
 def checkGameEnd():
-    if player.healthPoints == 0:
+    if player.healthPoints <= 0:
         canvas.create_text(WIDTH/2, HEIGHT/2, text="YOU DIED", font=("Helvetica", 18), fill="red")
         return True
-    elif boss.healthPoints == 0:
+    elif boss.healthPoints <= 0:
         canvas.create_text(WIDTH/2, HEIGHT/2, text="YOU WON", font=("Helvetica", 18), fill="red")
         return True
     else:
@@ -80,8 +84,8 @@ godricks_rune = PhotoImage(file=os.path.join(assetsDirectory, 'godricks_rune.PNG
 player = Player(canvas, name='Player1', healthPoints=800, mana=100, stamina=700)
 weapon = Weapon(canvas, name='Sword', damage=45, weight=50, reach=150)
 boss = Boss(canvas, name='Boss', healthPoints=80)
-estustFlask = EstustFlask(quantity=12, healing=280)
-gameUI = GameUI(canvas, player, boss, rune_background, rune_frame, godricks_rune)
+estusFlask = EstustFlask(quantity=12, healing=280)
+gameUI = GameUI(canvas, player, boss, estusFlask, rune_background, rune_frame, godricks_rune)
 #equip weapon
 player.equipWeapon(weapon)
 #pass boss and player instance to each other (used for interaciton)
