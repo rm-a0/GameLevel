@@ -60,7 +60,8 @@ def updateGame():
         #player.applyStatusEffect()
 
         #update UI
-        gameUI.updateHealthBar()
+        gameUI.updatePlayerHealthBar()
+        gameUI.updateBossHealthBar()
         gameUI.updateStaminaBar()
         gameUI.updateManaBar()
 
@@ -83,7 +84,7 @@ godricks_rune = PhotoImage(file=os.path.join(assetsDirectory, 'godricks_rune.PNG
 #create objects
 player = Player(canvas, name='Player1', healthPoints=800, mana=100, stamina=700)
 weapon = Weapon(canvas, name='Sword', damage=45, weight=50, reach=150)
-boss = Boss(canvas, name='Boss', healthPoints=80)
+boss = Boss(canvas, name='Boss', healthPoints=900)
 estusFlask = EstustFlask(quantity=12, healing=280)
 gameUI = GameUI(canvas, player, boss, estusFlask, rune_background, rune_frame, godricks_rune)
 #equip weapon

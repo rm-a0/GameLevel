@@ -8,7 +8,7 @@ class GameUI:
         self.estusFlask = estusFlask
         
         self.playerRune = self.createRune(rune_background, rune_frame, chosen_rune)
-        self.playerHealthBar = self.createHealthBar()
+        self.playerHealthBar = self.createHealthBar(150, 60, player.healthPoints, 16)
         self.playerManaBar = self.createManaBar()
         self.playerStaminaBar = self.createStaminaBar()
         #self.borders = self.createBorders()
@@ -19,7 +19,7 @@ class GameUI:
         self.emptySlot1 = self.createItemSlot(120, HEIGHT-130)
         self.emptySlot2 = self.createItemSlot(190, HEIGHT-180)
 
-        #self.bossHealthBar = self.createBar(400, HEIGHT-100, boss.healthPoints, 'red')
+        self.bossHealthBar = self.createHealthBar(400, HEIGHT-100, boss.healthPoints, 8)
 
     def createRune(self, rune_background, rune_frame, chosen_rune):
         x = 20
@@ -29,16 +29,19 @@ class GameUI:
         rune = self.canvas.create_image(x, y, anchor="nw", image=chosen_rune)
         return rune
 
-    def createHealthBar(self):
-        x = 150
-        y = 60
-        healthBar = self.canvas.create_rectangle(x, y, x + self.player.healthPoints, y - 16, fill='red', outline='')
+    def createHealthBar(self, x, y, length, height):
+        healthBar = self.canvas.create_rectangle(x, y, x + length, y - height, fill='red', outline='')
         return healthBar
     
-    def updateHealthBar(self):
+    def updatePlayerHealthBar(self):
         x = 150
         y = 60
         self.canvas.coords(self.playerHealthBar, x, y, x + self.player.healthPoints, y - 16)
+
+    def updateBossHealthBar(self):
+        x = 400
+        y = HEIGHT-100
+        self.canvas.coords(self.bossHealthBar, x, y, x + self.boss.healthPoints, y - 8)
 
     def createManaBar(self):
         x = 150

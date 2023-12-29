@@ -17,3 +17,5 @@ class Boss:
 
     def createPlayerInstance(self, playerInstance):
         self.playerInstance = playerInstance
+
+    
