@@ -23,7 +23,7 @@ def healEvent(event, player, estusFlask, gameUI):
     estusFlask.heal(player, event)
     gameUI.updateEstusFlaskCounter(event)
 
-def bindKeys(canvas, player):
+def bindKeys(canvas, player, boss, estusFlask, gameUI):
     #UI RELEATED KEYBINDS
     canvas.bind("<F11>", fullscreen)
 
@@ -36,10 +36,10 @@ def bindKeys(canvas, player):
     canvas.bind("<KeyRelease-d>", player.stopMoveRight)
     canvas.bind("<space>", player.jump)
     canvas.bind("<KeyPress-Shift_L>", player.roll)
-    canvas.bind("<Button-1>", player.attack)
+    canvas.bind("<Button-1>", lambda event: player.attack(boss, event))
 
     #ITEM RELEATED KEYBINDS
-    canvas.bind("<e>", lambda event: healEvent(event))
+    canvas.bind("<e>", lambda event: healEvent(event, player, estusFlask, gameUI))
 
 def checkGameEnd(canvas, player, boss):
     if player.healthPoints <= 0:
@@ -94,7 +94,7 @@ def main():
 
     #create objects
     player = Player(canvas, name='Player1', healthPoints=800, mana=100, stamina=700)
-    weapon = Weapon(canvas, name='Sword', damage=45, weight=50, reach=150)
+    weapon = Weapon(canvas, name='Sword', damage=100, weight=50, length=150, width=10)
     boss = Boss(canvas, name='Boss', healthPoints=900)
     estusFlask = EstustFlask(quantity=12, healing=280)
     gameUI = GameUI(canvas, player, boss, estusFlask, rune_background, rune_frame, godricks_rune)
@@ -107,7 +107,7 @@ def main():
     boss.createPlayerInstance(player)
 
     #bind keys
-    bindKeys(canvas, player)
+    bindKeys(canvas, player, boss, estusFlask, gameUI)
 
     #game loop
     canvas.after(DELAY, updateGame, canvas, player, boss, gameUI)

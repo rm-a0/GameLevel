@@ -98,21 +98,25 @@ class Player:
         self.isRolling = False
         self.velocityX = 0
 
-    def attack(self, event):
+    def attack(self, boss, event):
         if self.isRolling == False and self.stamina > 200:
             self.stamina -= 200
-            self.executeAttack()
+            self.executeAttack(boss)
 
-    def executeAttack(self):
+    def executeAttack(self, boss):
         if self.isFacing == RIGHT:
-            self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x + self.width, self.y + self.height/2, self.equippedWeapon.reach, -180)
+            self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x + self.width, self.y + self.height/2, self.equippedWeapon.length, self.equippedWeapon.width, self.isFacing)
         if self.isFacing == LEFT:
-            self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x, self.y + self.height/2, self.equippedWeapon.reach, 180)
-        self.checkCollision()
+            self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x, self.y + self.height/2, self.equippedWeapon.length, self.equippedWeapon.width, self.isFacing)
+        if self.checkCollision(boss) == True:
+            self.bossInstance.healthPoints -= self.equippedWeapon.damage
+            print(f"boss hp: {self.bossInstance.healthPoints}")
         self.canvas.delete(self.attackHitbox)
         self.attackHitbox = None
 
 
-    def checkCollision(self):
-        self.bossInstance.healthPoints -= self.equippedWeapon.damage
-        print(f"boss hp: {self.bossInstance.healthPoints}")
+    def checkCollision(self, boss):
+        weaponCoords = self.canvas.coords(self.attackHitbox)
+        bossCoords = self.canvas.coords(boss.hitbox)
+        
+        return weaponCoords[0] < bossCoords[2] and weaponCoords[2] > bossCoords[0] and weaponCoords[3] > bossCoords[1] and weaponCoords[1] < bossCoords[3]
