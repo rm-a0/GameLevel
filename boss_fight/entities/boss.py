@@ -18,4 +18,7 @@ class Boss:
     def createPlayerInstance(self, playerInstance):
         self.playerInstance = playerInstance
 
+    def updatePosition(self, dt):
+        self.x -= 0 * dt
+        self.canvas.coords(self.hitbox, self.x, self.y, self.x + self.width, self.y + self.height)
     

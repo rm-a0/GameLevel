@@ -1,11 +1,12 @@
 from tkinter import *
 import os
 
-from constants import WIDTH, HEIGHT, DELAY
+from constants import WIDTH, HEIGHT, DELAY, DAMAGE
 from entities.player import Player
 from entities.weapon import Weapon
 from entities.boss import Boss
-from entities.estus_flask import EstustFlask
+from entities.estus_flask import EstusFlask
+from entities.spell import Spell
 from ui.game_ui import GameUI
 
 #get the directory for assets and join them
@@ -57,11 +58,14 @@ def updateGame(canvas, player, boss, gameUI):
         dt = DELAY / 1000.0
 
         if checkGameEnd(canvas, player, boss) == False:
-            #update entities
+            #update player
             player.updatePosition(dt)
             player.applyGravity(dt)
             player.refillStamina()
             #player.applyStatusEffect()
+
+            #update boss
+            boss.updatePosition(dt)
 
             #update UI
             gameUI.updatePlayerHealthBar()
@@ -93,14 +97,17 @@ def main():
     godricks_rune = PhotoImage(file=os.path.join(assetsDirectory, 'godricks_rune.PNG'))
 
     #create objects
-    player = Player(canvas, name='Player1', healthPoints=800, mana=100, stamina=700)
-    weapon = Weapon(canvas, name='Sword', damage=100, weight=50, length=150, width=10)
+    player = Player(canvas, name='Player', healthPoints=800, mana=100, stamina=700)
+    weaponSpell = Spell(canvas, name='Weapon Spell', effect=DAMAGE, magnitude=200, manaCost=50, castDuration=1000)
+    weapon = Weapon(canvas, name='Sword', damage=100, weight=50, length=150, width=10, spell=weaponSpell)
     boss = Boss(canvas, name='Boss', healthPoints=900)
-    estusFlask = EstustFlask(quantity=12, healing=280)
+    estusFlask = EstusFlask(quantity=12, healing=280)
+
     gameUI = GameUI(canvas, player, boss, estusFlask, rune_background, rune_frame, godricks_rune)
 
-    #equip weapon
+    #equip weapon and spells
     player.equipWeapon(weapon)
+    player.equipSpell(weapon.spell, 0)
 
     #pass boss and player instance to each other (used for interaciton)
     player.createBossInstance(boss)

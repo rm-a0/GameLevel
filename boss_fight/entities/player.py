@@ -1,7 +1,5 @@
-RIGHT = 0
-LEFT = 1
-
-from constants import HEIGHT, GRAVITY
+from constants import HEIGHT, GRAVITY, RIGHT, LEFT
+import time
 
 class Player:
     def __init__(self, canvas, name, healthPoints, mana, stamina):
@@ -18,6 +16,7 @@ class Player:
         self.equippedWeapon = None
         self.attackHitbox = None
         self.bossInstance = None
+        self.spells = [None] * 3
 
         self.rollSpeed = self.speed*1.5
         self.jumpStrength = 500
@@ -44,9 +43,20 @@ class Player:
     def equipWeapon(self, weapon):
         self.equippedWeapon = weapon
 
+    def equipSpell(self, spell, slot):
+        self.spells[slot] = spell
+
     def refillStamina(self):
         if self.stamina < self.maxStamina:
             self.stamina += 1
+
+    def stopMovement(self, duration):
+        temp = self.speed
+        self.speed = 0
+        self.canvas.after(duration, self.resumeMovement, temp)
+
+    def resumeMovement(self, temp):
+        self.speed = temp
 
     def updatePosition(self, dt):
         self.x += self.velocityX * dt
@@ -99,11 +109,15 @@ class Player:
         self.velocityX = 0
 
     def attack(self, boss, event):
-        if self.isRolling == False and self.stamina > 200:
+        if self.isJumping == False and self.isRolling == False and self.stamina > 200:
             self.stamina -= 200
-            self.executeAttack(boss)
+            self.executeNormalAttack(boss)
+        if self.isJumping == True and self.isRolling == False and self.stamina > 200:
+            self.stamina -= 200
+            self.executeJumpAttack(boss)
 
-    def executeAttack(self, boss):
+    def executeNormalAttack(self, boss):
+        self.stopMovement(1000)
         if self.isFacing == RIGHT:
             self.attackHitbox = self.equippedWeapon.createHibox(self.canvas, self.x + self.width, self.y + self.height/2, self.equippedWeapon.length, self.equippedWeapon.width, self.isFacing)
         if self.isFacing == LEFT:
@@ -118,5 +132,9 @@ class Player:
     def checkCollision(self, boss):
         weaponCoords = self.canvas.coords(self.attackHitbox)
         bossCoords = self.canvas.coords(boss.hitbox)
-        
+
         return weaponCoords[0] < bossCoords[2] and weaponCoords[2] > bossCoords[0] and weaponCoords[3] > bossCoords[1] and weaponCoords[1] < bossCoords[3]
+    
+    def castSpellOne(self, boss, event):
+        if self.isRolling == False and self.isJumping == False and self.mana > self.spellSlotOne.manaCost:
+            self.mana -= self.spellSlotOne.manaCost
