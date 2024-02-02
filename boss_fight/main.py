@@ -21,6 +21,7 @@ def disableMouse(event):
     return "break"
 
 def healEvent(event, player, estusFlask, gameUI):
+    player.stopMovement(1000)
     estusFlask.heal(player, event)
     gameUI.updateEstusFlaskCounter(event)
 
@@ -39,8 +40,11 @@ def bindKeys(canvas, player, boss, estusFlask, gameUI):
     canvas.bind("<KeyPress-Shift_L>", player.roll)
     canvas.bind("<Button-1>", lambda event: player.attack(boss, event))
 
-    #ITEM RELEATED KEYBINDS
-    canvas.bind("<e>", lambda event: healEvent(event, player, estusFlask, gameUI))
+    #ITEM AND SPELL RELEATED KEYBINDS
+    canvas.bind("e", lambda event: healEvent(event, player, estusFlask, gameUI))
+    canvas.bind("<Button-5>", lambda event: player.castSpell(player.spells[0], boss, event))
+    canvas.bind("<Button-4>", lambda event: player.castSpell(player.spells[1], boss, event))
+
 
 def checkGameEnd(canvas, player, boss):
     if player.healthPoints <= 0:

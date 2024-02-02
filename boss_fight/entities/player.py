@@ -6,7 +6,7 @@ class Player:
         self.canvas = canvas
         self.name = name
         self.maxHealthPoints = healthPoints
-        self.healthPoints = healthPoints
+        self.healthPoints = healthPoints-70
         self.maxMana = mana
         self.mana = mana
         self.maxStamina = stamina
@@ -27,6 +27,7 @@ class Player:
 
         self.isJumping = False
         self.isFacing = RIGHT
+        self.isPerformingAction = False
         self.isRolling = False #used for checking hitbox status
 
         #coordinates and dimensions of a player object
@@ -51,12 +52,16 @@ class Player:
             self.stamina += 1
 
     def stopMovement(self, duration):
+        self.isPerformingAction = True
         temp = self.speed
         self.speed = 0
-        self.canvas.after(duration, self.resumeMovement, temp)
+        self.canvas.update()
+        self.canvas.after(duration, lambda: self.resumeMovement(temp))
 
     def resumeMovement(self, temp):
+        self.isPerformingAction = False
         self.speed = temp
+        self.canvas.update()
 
     def updatePosition(self, dt):
         self.x += self.velocityX * dt
@@ -78,7 +83,7 @@ class Player:
         self.velocityX = 0
 
     def jump(self, event):
-        if self.isJumping == False and self.stamina > 200 and self.isRolling == False:
+        if self.isPerformingAction == False and self.isJumping == False and self.stamina > 200 and self.isRolling == False:
             self.stamina -= 200
             self.velocityY = -self.jumpStrength
             self.isJumping = True
@@ -92,7 +97,7 @@ class Player:
                 self.velocityY = 0
     
     def roll(self, event):
-        if self.isRolling == False and self.stamina > 200 and self.isJumping == False:
+        if self.isPerformingAction == False and self.isRolling == False and self.stamina > 200 and self.isJumping == False:
             self.stamina -= 200
             self.isRolling = True
             self.executeRoll()
@@ -109,10 +114,10 @@ class Player:
         self.velocityX = 0
 
     def attack(self, boss, event):
-        if self.isJumping == False and self.isRolling == False and self.stamina > 200:
+        if self.isPerformingAction == False and self.isJumping == False and self.isRolling == False and self.stamina > 200:
             self.stamina -= 200
             self.executeNormalAttack(boss)
-        if self.isJumping == True and self.isRolling == False and self.stamina > 200:
+        if self.isPerformingAction == False and self.isJumping == True and self.isRolling == False and self.stamina > 200:
             self.stamina -= 200
             self.executeJumpAttack(boss)
 
@@ -135,6 +140,13 @@ class Player:
 
         return weaponCoords[0] < bossCoords[2] and weaponCoords[2] > bossCoords[0] and weaponCoords[3] > bossCoords[1] and weaponCoords[1] < bossCoords[3]
     
-    def castSpellOne(self, boss, event):
-        if self.isRolling == False and self.isJumping == False and self.mana > self.spellSlotOne.manaCost:
-            self.mana -= self.spellSlotOne.manaCost
+    def castSpell(self, spell, boss, event):
+        if spell is None:
+            print(f"Spell slot empty")
+            return None
+        if self.isPerformingAction == False and self.isRolling == False and self.isJumping == False and self.mana >= spell.manaCost:
+            self.mana -= spell.manaCost
+            self.executeSpell(boss, spell)
+
+    def executeSpell(self, boss, spell):
+        self.stopMovement(1000)
